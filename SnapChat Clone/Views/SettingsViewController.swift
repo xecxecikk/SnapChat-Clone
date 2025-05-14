@@ -6,24 +6,41 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+       
     }
     
 
-    /*
-    // MARK: - Navigation
+    
+    
+    
+    @IBAction func logoutBttn(_ sender: Any) {
+        
+        print("LOGOUT butonuna basıldı")
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+        do {
+                   try Auth.auth().signOut()
+                   clearUserSession()
+                   performSegue(withIdentifier: "toSignInVC", sender: nil)
+               } catch let signOutError as NSError {
+                   showAlert(title: "Sign Out Error", message: signOutError.localizedDescription)
+               }
+           }
 
-}
+           private func clearUserSession() {
+               UserSingleton.sharedUserInfo.email = ""
+               UserSingleton.sharedUserInfo.username = ""
+           }
+
+           private func showAlert(title: String, message: String) {
+               let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+               alert.addAction(UIAlertAction(title: "OK", style: .default))
+               present(alert, animated: true)
+           }
+       }
